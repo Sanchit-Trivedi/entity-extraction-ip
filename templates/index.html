@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta id="my-data" data-jd="{{jd}}" data-resume="{{resume}}" data-results="{{results}}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,400;0,600;0,800;1,300&display=swap"
+    rel="stylesheet">
+  <script src="https://kit.fontawesome.com/9fcb41a601.js" crossorigin="anonymous"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static',filename='favicon-32x32.png') }}">
+  <title>IP Entity Extraction</title>
+</head>
+
+<body>
+  <!-- <div class="py-0 my-0">
+    <h1>Entity Extraction from Job Ads, CV and Skill Gap Analysis</h1>
+  </div> -->
+  <nav class="navbar navbar-dark bg-dark justify-content-center">
+    <a class="navbar-brand" href="#" style="display: flex; align-items: center">
+      <img src="{{ url_for('static',filename='iiitd_logo.png') }}" width="60" height="30"
+        class="d-inline-block align-center" alt="" style="margin-inline: 20px" />
+      Entity Extraction from Job Ads, CV and Skill Gap Analysis
+    </a>
+  </nav>
+  <div class="d-flex align-items-center flex-column h-100 mt-5" id="header">
+    <div class="contact-form">
+      <form action="{{ url_for('run_model') }}" method="post">
+        <div class="row mb-3">
+          <!-- <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" name="txtName" class="form-control" placeholder="Your Name *" value="" />
+            </div>
+            <div class="form-group">
+              <input type="text" name="txtEmail" class="form-control" placeholder="Your Email *" value="" />
+            </div>
+            <div class="form-group">
+              <input type="text" name="txtPhone" class="form-control" placeholder="Your Phone Number *" value="" />
+            </div>
+            <div class="form-group">
+              <input type="submit" name="btnSubmit" class="btnContact" value="Send Message" />
+            </div>
+          </div> -->
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="jd" class="form-label">Enter the Job Description</label>
+              <textarea name="jd" id="jd" class="form-control" placeholder="Job Description *"
+                style="width: 100%; height: 120px" required></textarea>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="resume" class="form-label">Enter your skills from your Resume</label>
+              <textarea name="resume" id="resume" class="form-control" placeholder="Your Skills *"
+                style="width: 100%; height: 120px" required></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="margin-bottom: -6%">
+          <div class="col-12">
+            <div class="form-group d-flex justify-content-center">
+              <button type="submit" name="submit_button" value="home" class="btn btn-outline-secondary"
+                style="margin-right: 1em;"><i class="fa fa-undo"></i> Reset</button>
+              <button type="submit" name="submit_button" value="run" class="btn btn-primary"><i class="fa fa-play"></i>
+                Run Model</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="contact-form my-5 p-3" id="res-div">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Extracted Job Skills</h5>
+              <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+              {% if jd_skills|length > 0 %}
+              <ul class="list-group list-group-flush">
+                {% for skill in jd_skills %}
+                <li class="list-group-item">{{skill}}</li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <p class="card-text">No skills found</p>
+              {%endif%}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Extracted Soft Skills</h5>
+              {% if soft_skills|length > 0 %}
+              <ul class="list-group list-group-flush">
+                {% for skill in soft_skills %}
+                <li class="list-group-item">{{skill}}</li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <p class="card-text">No soft skills found</p>
+              {%endif%}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Unfullfilled Skills</h5>
+              {% if skill_gap|length > 0 %}
+              <ul class="list-group list-group-flush">
+                {% for skill in skill_gap %}
+                <li class="list-group-item">{{skill}}</li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <p class="card-text">You are the perfect candidate!</p>
+              {%endif%}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-light text-center text-lg-start">
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+      Monsoon 2020 IP by: Naman Tyagi, Sanchit Trivedi, Shashwat Aggarwal <br />Under the guidance of Prof. Mukesh
+      Mohania
+    </div>
+    <!-- Copyright -->
+  </footer>
+  <!-- <div class="container" id="content">
+    <div class="row h-100 mt-5">
+      <main class="col-md-6">
+        <h1>Content...</h1>
+      </main>
+    </div>
+  </div> -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous">
+  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+  <script>
+    const jd = "{{jd}}";
+    const resume = "{{resume}}";
+    const show_results = "{{show_results}}" == "True";
+    if (jd != "None") {
+      $("textarea#jd").val(jd);
+    }
+    if (resume != "None") {
+      $("textarea#resume").val(resume);
+    }
+    if (show_results) {
+      $("#res-div").show();
+    } else {
+      $("#res-div").hide();
+    }
+  </script>
+</body>
+
+</html>
