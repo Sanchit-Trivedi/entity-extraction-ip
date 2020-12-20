@@ -1,5 +1,5 @@
 from flask import *
-import final
+from final import find_skill_gap
 
 app = Flask(__name__)
 
@@ -16,10 +16,13 @@ def run_model():
     jd = request.form['jd']
     resume = request.form['resume']
     print(jd, resume)
-    print(final.find_skill_gap(jd, resume.split(",")))
-    jd_skills = ["java", "python"]
-    soft_skills = ["leadership", "teanwork"]
-    skill_gap = ["excel"]
+    result = find_skill_gap(jd, resume.split(","))
+    jd_skills = result[0]
+    soft_skills = result[1]
+    skill_gap = result[2]
+    # jd_skills = ["java", "python"]
+    # soft_skills = ["leadership", "teanwork"]
+    # skill_gap = ["excel"]
     return render_template("index.html", jd=jd, resume=resume, jd_skills=jd_skills, soft_skills=soft_skills, skill_gap=skill_gap, show_results=True)
 
 
